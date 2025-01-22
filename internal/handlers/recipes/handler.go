@@ -27,5 +27,9 @@ func NewHandler(api *gin.Engine, service service) *Handler {
 
 func (h *Handler) RegisterRoute() {
 	route := h.Group("/recipes")
-	route.POST("/add", )
+	route.POST("/add", h.AddRecipes)
+	route.GET("/all", h.GetAll)
+	route.GET("/:id", h.GetRecipesByID)
+	route.PATCH("/update/:id", h.UpdateRecipes)
+	route.DELETE("/delete", h.DeleteRecipes)
 }

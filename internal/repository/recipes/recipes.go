@@ -2,7 +2,7 @@ package recipes
 
 import "github.com/Fairuzzzzz/taskapp/internal/models/recipes"
 
-func (r *repository) CreateREcipes(model recipes.Recipe) error {
+func (r *repository) CreateRecipes(model recipes.Recipe) error {
 	return r.db.Create(&model).Error
 }
 

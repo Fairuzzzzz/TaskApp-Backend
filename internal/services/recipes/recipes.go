@@ -39,6 +39,7 @@ func (s *service) GetAll() ([]recipesModel.RecipeResponse, error) {
 			ID:          recipe.ID,
 			Title:       recipe.Title,
 			Description: recipe.Description,
+			ImageURL:    recipe.ImageURL,
 			Ingredients: recipe.Ingredients,
 			Eattime:     recipe.Eattime,
 			From:        recipe.From,
@@ -66,6 +67,7 @@ func (s *service) GetByID(id uint) (*recipesModel.RecipeResponse, error) {
 		ID:          request.ID,
 		Title:       request.Title,
 		Description: request.Description,
+		ImageURL:    request.ImageURL,
 		Ingredients: request.Ingredients,
 		Eattime:     request.Eattime,
 		From:        request.From,
@@ -92,11 +94,19 @@ func (s *service) UpdateRecipes(request recipesModel.Recipe, id uint) error {
 			ID: existingRecipes.ID,
 		},
 		Title: request.Title,
+
 		Description: func() string {
 			if request.Description != "" {
 				return request.Description
 			}
 			return existingRecipes.Description
+		}(),
+
+		ImageURL: func() string {
+			if request.ImageURL != "" {
+				return request.ImageURL
+			}
+			return existingRecipes.ImageURL
 		}(),
 
 		Ingredients: func() string {

@@ -8,12 +8,28 @@ import (
 )
 
 func (s *service) CreateFavorite(favorites *favorites.Favorites) error {
-	err := s.repository.CreateFavorite(favorites)
+	if favorites.RecipeID == 0 || favorites.UserID == 0 {
+		return errors.New("recipe id and user id is required")
+	}
+
+	exists, err := s.CheckFavorite(favorites.RecipeID, favorites.UserID)
 	if err != nil {
-		log.Error().Err(err).Msg("error creating favorites in database")
 		return err
 	}
-	return nil
+
+	if exists {
+		return errors.New("recipe already favorited")
+	}
+
+	return s.repository.CreateFavorite(favorites)
+}
+
+func (s *service) CheckFavorite(recipeID uint, userID uint) (bool, error) {
+	if recipeID == 0 || userID == 0 {
+		return false, errors.New("recipe id and user id is required")
+	}
+
+	return s.repository.CheckFavorite(recipeID, userID)
 }
 
 func (s *service) GetAll(userID uint) ([]favorites.Favorites, error) {

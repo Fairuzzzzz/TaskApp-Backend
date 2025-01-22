@@ -9,6 +9,7 @@ type repository interface {
 	CreateFavorite(favorites *favorites.Favorites) error
 	GetAll(userID uint) ([]favorites.Favorites, error)
 	Delete(ID uint) error
+	CheckFavorite(recipeID uint, userID uint) (bool, error)
 }
 
 type service struct {
