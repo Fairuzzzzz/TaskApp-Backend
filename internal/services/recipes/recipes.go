@@ -16,6 +16,7 @@ func (s *service) CreateRecipes(request recipesModel.Recipe) error {
 	model := recipesModel.Recipe{
 		Title:       request.Title,
 		Description: request.Description,
+		ImageURL:    request.ImageURL,
 		Ingredients: request.Ingredients,
 		Eattime:     request.Eattime,
 		From:        request.From,
@@ -46,6 +47,7 @@ func (s *service) GetAll() ([]recipesModel.RecipeResponse, error) {
 			Nutrition:   recipe.Nutrition,
 			Calories:    recipe.Calories,
 			Rating:      recipe.Rating,
+			IsFavorite:  recipe.IsFavorite,
 		}
 	}
 

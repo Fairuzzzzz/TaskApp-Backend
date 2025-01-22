@@ -61,5 +61,31 @@ func (h *Handler) DeleteFavorite(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "favorite deleted successfully",
+	})
+}
+
+func (h *Handler) DeleteByRecipeID(c *gin.Context) {
+	recipeID := c.Param("recipeId")
+	id, err := strconv.ParseUint(recipeID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	userID := c.GetUint("user_id")
+
+	if err := h.service.DeleteByRecipeID(uint(id), userID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "favorite deleted successfully",
+	})
 }

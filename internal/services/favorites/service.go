@@ -10,6 +10,7 @@ type repository interface {
 	GetAll(userID uint) ([]favorites.Favorites, error)
 	Delete(ID uint) error
 	CheckFavorite(recipeID uint, userID uint) (bool, error)
+	DeleteByRecipeID(recipeID uint, userID uint) error
 }
 
 type service struct {

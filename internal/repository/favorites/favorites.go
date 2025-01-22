@@ -61,8 +61,45 @@ func (r *repository) Delete(ID uint) error {
 			return err
 		}
 
-		if err := tx.Model(&recipes.Recipe{}).Where("id = ?", favorite.RecipeID).Update("is_favorite", false).Error; err != nil {
+		var count int64
+		if err := tx.Model(&favorites.Favorites{}).Where("recipe_id = ? AND id != ?", favorite.RecipeID, ID).Count(&count).Error; err != nil {
 			return err
+		}
+
+		if count == 0 {
+			if err := tx.Model(&recipes.Recipe{}).Where("id = ?", favorite.RecipeID).Update("is_favorite", false).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+func (r *repository) DeleteByRecipeID(recipeID uint, userID uint) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		// Find the favorite first
+		var favorite favorites.Favorites
+		if err := tx.Where("recipe_id = ? AND user_id = ?", recipeID, userID).First(&favorite).Error; err != nil {
+			return err
+		}
+
+		// Delete the favorite
+		if err := tx.Delete(&favorite).Error; err != nil {
+			return err
+		}
+
+		// Check if any other users have favorited this recipe
+		var count int64
+		if err := tx.Model(&favorites.Favorites{}).Where("recipe_id = ?", recipeID).Count(&count).Error; err != nil {
+			return err
+		}
+
+		// If no more favorites exist, update recipe's is_favorite to false
+		if count == 0 {
+			if err := tx.Model(&recipes.Recipe{}).Where("id = ?", recipeID).Update("is_favorite", false).Error; err != nil {
+				return err
+			}
 		}
 
 		return nil

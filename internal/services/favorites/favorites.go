@@ -57,3 +57,16 @@ func (s *service) DeleteFavorites(ID uint) error {
 	}
 	return nil
 }
+
+func (s *service) DeleteByRecipeID(recipeID uint, userID uint) error {
+	if recipeID == 0 || userID == 0 {
+		return errors.New("recipe id and user id is required")
+	}
+
+	err := s.repository.DeleteByRecipeID(recipeID, userID)
+	if err != nil {
+		log.Error().Err(err).Msg("error deleting favorites from database")
+		return err
+	}
+	return nil
+}

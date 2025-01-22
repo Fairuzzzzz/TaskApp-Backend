@@ -10,6 +10,7 @@ type service interface {
 	GetAll(userID uint) ([]favorites.Favorites, error)
 	DeleteFavorites(ID uint) error
 	CheckFavorite(recipeID uint, userID uint) (bool, error)
+	DeleteByRecipeID(recipeID uint, userID uint) error
 }
 
 type Handler struct {
@@ -28,5 +29,5 @@ func (h *Handler) RegisterRoute() {
 	route := h.Group("/favorites")
 	route.POST("/add", h.AddToFavorites)
 	route.GET("/all", h.GetAllFavorites)
-	route.DELETE("/:id", h.DeleteFavorite)
+	route.DELETE("/recipe/:recipeId", h.DeleteByRecipeID)
 }
